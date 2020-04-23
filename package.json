@@ -1,0 +1,22 @@
+{
+  "name": "notetaker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hjbx217/NoteTaker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hjbx217/NoteTaker/issues"
+  },
+  "homepage": "https://github.com/hjbx217/NoteTaker#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
