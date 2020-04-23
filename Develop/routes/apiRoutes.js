@@ -4,19 +4,23 @@ const path = require("path");
 const util = require("util");
 
 module.exports = function(app) {
+    var stat = util.promisify(fs.readFile);
+    function readingFile() {
+        return stat(path.join(__dirname , "../db/db.json"),"utf8")
+    }
     app.get("/api/notes", function(req, res) {
-    console.log(db)
-        res.json(db)
+    var pNote;
+    readingFile()
+    .then(pNote => { 
+        var parpNote = JSON.parse(pNote)
+        console.log("--");
+        console.log(pNote);
+        res.json(parpNote);
+    });
     });
 
-    //another route for API POST //read the file, get hte info that already exsits in the front end, then write both of the info to the file 
 
-//return fs.readfile 
-  /*  function rNote() {
-        return fs.readFile(path.join(__dirname , "../db/db.json"), "utf8", (err, data) => {
-            if (err) throw err;
-        });
-    } */
+    var index = 10
 
     
     
@@ -26,30 +30,48 @@ module.exports = function(app) {
 
         //object destructuring
         const {title,text} = req.body
-        console.log(title)
-        console.log(text)
-
-        //title, text, ID (need to increment the ID)
-        let updatedNote = {title,text,id:1}
-        //make sure the ID Isn't the same (used for delete file)
+       // console.log(title)
+       // console.log(text)
         
+        //title, text, ID (need to increment the ID)
+        let updatedNote = {title,text,id:index}
+        //make sure the ID Isn't the same (used for delete file)
+        index ++;
+        
+
         //create an array, push updated notes, and then push db
         var allNotes = [];
         allNotes.push(updatedNote)
         allNotes.push(db)
-        var jAllNotes = JSON.stringify(allNotes)
+        db.push(updatedNote)
+        console.log(db)
+        var jAllNotes = JSON.stringify(db)
 
-        //const allNotes = [...db]
-        console.log(allNotes)
 
-        var sNote = JSON.stringify(updatedNote)
+        //  var sNote = JSON.stringify(updatedNote)
 
        fs.writeFile(path.join(__dirname , "../db/db.json"), jAllNotes, (err) => {
             if (err) throw err;
-        })
-        console.log(req.body)
+        });
 
-    }) 
+        res.redirect("/notes")
+       // console.log(req.body)
+
+    }); 
+
+    app.delete("/api/notes/:id", function(req, res) {
+        var del = JSON.parse(req.params.id)
+        let result; 
+        result = db.filter(item => item.id !== del);
+        console.log(del);
+        console.log(result);
+
+        var jAllNotes = JSON.stringify(result)
+       fs.writeFile(path.join(__dirname , "../db/db.json"), jAllNotes, (err) => {
+            if (err) throw err;
+        });
+        res.json({ok: true})
+    });
 
 }
 
